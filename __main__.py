@@ -2,6 +2,8 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('WebKit', '3.0')
 from gi.repository import Gtk, Gdk, WebKit
+from ChatWindow import ChatWindow
+from GoogleCloud import SmartHomeCommands
 
 
 class SmartHomeWindow(Gtk.Window):
@@ -15,9 +17,8 @@ class SmartHomeWindow(Gtk.Window):
         self.notebook = Gtk.Notebook()
         self.add(self.notebook)
 
-        self.chat_page = Gtk.Box()
-        self.chat_page.set_border_width(10)
-        self.chat_page.add(Gtk.Label("Google Assistant Chat"))
+        self.chat_page = ChatWindow()
+        self.sh_commands = SmartHomeCommands(self.chat_page)
         self.notebook.append_page(self.chat_page, Gtk.Label("GoogleA chat"))
 
         self.home_page = Gtk.Box()
@@ -25,15 +26,13 @@ class SmartHomeWindow(Gtk.Window):
         self.home_page.add(Gtk.Label("Home Page"))
         self.notebook.append_page(self.home_page, Gtk.Label("Smart Home Page"))
 
+        page_size = Gtk.Adjustment(lower=10, page_size=100)
+        scrollwindow = Gtk.ScrolledWindow(page_size)
         web_page = WebKit.WebView()
         web_page.load_uri("https://www.google.com")
-        self.add_tab(web_page, 'Google')
+        scrollwindow.add(web_page)
+        self.add_tab(scrollwindow, 'Google')
         self.webpages.append(web_page)
-
-        new_img = Gtk.Image()
-        new_img.set_from_stock(Gtk.STOCK_NEW, Gtk.IconSize.MENU)
-        self.notebook.
-
 
     def add_tab(self, widget, label_str):
         hbox = Gtk.HBox(False, 0)
@@ -60,6 +59,7 @@ class SmartHomeWindow(Gtk.Window):
 
     def on_newtab_button(self):
         print("Pressed new")
+
 
 def keypress(window, event):
     key = Gdk.keyval_name(event.keyval)
